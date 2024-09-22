@@ -1,0 +1,31 @@
+name: Unit Tests in CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3  # Use the latest version (v3)
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4  # Use the latest version (v4)
+        with:
+          python-version: 3.11
+          cache: 'poetry'  # Cache Poetry dependencies for faster runs
+
+      - name: Install dependencies
+        run: |
+          pip install poetry
+          poetry install
+
+      - name: Run unit tests
+        run: poetry run pytest
