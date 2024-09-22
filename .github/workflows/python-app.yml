@@ -10,7 +10,7 @@ on:
 
 jobs:
   unit_tests:
-    runs-on: python:3.11-slim
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository code
