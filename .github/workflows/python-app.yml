@@ -28,9 +28,11 @@ jobs:
         run: poetry install --no-interaction --no-root
 
       - name: Run unit tests with test coverage
-        run: poetry run pytest --cov
+        run: |
+          poetry run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=app tests/ | tee pytest-coverage.txt
+
       - name: Pytest coverage comment
         uses: MishaKav/pytest-coverage-comment@main
         with:
-            pytest-coverage-path: ./pytest-coverage.txt
-            junitxml-path: ./pytest.xml
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./pytest.xml
