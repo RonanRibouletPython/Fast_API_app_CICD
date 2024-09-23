@@ -28,4 +28,9 @@ jobs:
         run: poetry install --no-interaction --no-root
 
       - name: Run unit tests with test coverage
-        run: poetry run pytest --cov=app tests/ > test_report.txt
+        run: poetry run pytest --cov
+      - name: Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+            pytest-coverage-path: ./pytest-coverage.txt
+            junitxml-path: ./pytest.xml
