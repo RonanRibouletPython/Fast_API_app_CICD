@@ -31,12 +31,15 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction --no-root
 
-      - name: Run unit tests with test coverage
-        run: |
-          poetry run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=app tests/ | tee pytest-coverage.txt
+      - name: Run unit tests and save coverage output
+        run: poetry run pytest --cov=app tests/ | tee pytest-coverage.txt
 
-      - name: Pytest coverage comment
-        uses: MishaKav/pytest-coverage-comment@main
+      - name: Commit coverage report
+        uses: EndBug/add-and-commit@v9  # Or another action that commits
         with:
-          pytest-coverage-path: ./pytest-coverage.txt
-          junitxml-path: ./pytest.xml
+          add: 'pytest-coverage.txt'
+          author_name: 'Riboulet Ronan'
+          author_email: 'ronanriboulet@gmail.com'
+          message: 'Update pytest-coverage.txt [skip ci]' 
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
