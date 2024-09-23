@@ -1,4 +1,4 @@
-name: Unit Tests in CI
+name: Unit Tests in CI for Fast API application
 
 on:
   push:
@@ -27,5 +27,5 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction --no-root
 
-      - name: Run unit tests
-        run: poetry run pytest
+      - name: Run unit tests with test coverage
+        run: poetry run pytest --cov=app tests/ > test_report.txt
