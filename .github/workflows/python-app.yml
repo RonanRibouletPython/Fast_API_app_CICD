@@ -13,7 +13,17 @@ permissions:
   contents: write
 
 jobs:
-  unit_tests:
+  build_docker_image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile -t my-fastapi-app:$(date +%s)
+
+  run_unit_tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,12 +44,19 @@ jobs:
       - name: Run unit tests and save coverage output
         run: poetry run pytest --cov=app tests/ | tee pytest-coverage.txt
 
-      - name: Commit coverage report
-        uses: EndBug/add-and-commit@v9  # Or another action that commits
+      # - name: Commit coverage report
+      #   uses: EndBug/add-and-commit@v9  # Or another action that commits
+      #   with:
+      #     add: 'pytest-coverage.txt'
+      #     author_name: 'Riboulet Ronan'
+      #     author_email: 'ronanriboulet@gmail.com'
+      #     message: 'Update pytest-coverage.txt' 
+      #   env: 
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload coverage report
+          
+        uses: actions/upload-artifact@v3
         with:
-          add: 'pytest-coverage.txt'
-          author_name: 'Riboulet Ronan'
-          author_email: 'ronanriboulet@gmail.com'
-          message: 'Update pytest-coverage.txt' 
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: pytest-coverage.txt
+          path: pytest-coverage.txt
