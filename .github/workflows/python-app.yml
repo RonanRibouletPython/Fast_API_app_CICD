@@ -40,6 +40,6 @@ jobs:
           add: 'pytest-coverage.txt'
           author_name: 'Riboulet Ronan'
           author_email: 'ronanriboulet@gmail.com'
-          message: 'Update pytest-coverage.txt [skip ci]' 
+          message: 'Update pytest-coverage.txt' 
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

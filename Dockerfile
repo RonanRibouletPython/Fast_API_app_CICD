@@ -1,16 +1,22 @@
-# use the official Python image as the base image
+# Use a slimmer base image if possible (e.g., python:3.11-slim-bullseye)
 FROM python:3.11-slim
-# set the working directory in the container
+
+# Set the working directory
 WORKDIR /app
-# copy the dependencies file to the working directory
-COPY . /app
-# install dependencies
-RUN pip install poetry
-# install dependencies
-RUN poetry install --no-interaction --no-root
-# get to the directory of the application
-WORKDIR /app/app
-# expose the port
+
+# Copy only the necessary files for dependencies (smaller image size)
+COPY pyproject.toml poetry.lock ./
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip poetry
+RUN poetry install --no-interaction --no-root 
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose the port your FastAPI app listens on
 EXPOSE 8000
-# define the command to run on container start with poetry
-CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+WORKDIR /app
+
+CMD ["poetry", "run", "uvicorn", "app.main:app",  "--host", "0.0.0.0", "--port", "8000"]
