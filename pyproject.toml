@@ -9,10 +9,12 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 fastapi = "^0.115.0"
-SQLAlchemy = "^2.0.35"
 uvicorn = "^0.30.6"
 pytest = "^8.3.3"
 pytest-cov = "^5.0.0"
+sqlalchemy = "^2.0.35"
+python-dotenv = "^1.0.1"
+psycopg2 = "^2.9.9"
 
 
 [tool.poetry.group.dev.dependencies]
