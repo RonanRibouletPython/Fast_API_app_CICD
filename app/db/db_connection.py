@@ -1,4 +1,6 @@
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import OperationalError
 from app.core.config import config
 
 creds_postgres = {
@@ -12,4 +14,6 @@ creds_postgres = {
 
 conn_str = f"postgresql+psycopg2://{creds_postgres['username']}:{creds_postgres['password']}@{creds_postgres['host']}:{creds_postgres['port']}/{creds_postgres['db']}"
 engine_postgres = create_engine(conn_str)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine_postgres)
 
