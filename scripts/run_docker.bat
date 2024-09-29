@@ -2,7 +2,7 @@
 set IMAGE_NAME=my-fastapi-app
 
 :: check if the docke image exists
-docker build -t %IMAGE_NAME% .
+docker build --no-cache -t %IMAGE_NAME% .
 
 :: run the containder mapped on port 8000
 echo Starting container...

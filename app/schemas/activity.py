@@ -17,4 +17,5 @@ class DateIdeas(BaseModel):
     activity_name: str
     activity_type: ActivityType
     budget: Budget
-    location: Optional[str] = None 
+    location: Optional[str] = None
+    link_info: Optional[str] = None

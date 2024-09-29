@@ -1,30 +1,29 @@
-from fastapi import FastAPI, Path, Query
-from app.schemas.date_ideas import DateIdeas
-from typing import List
+from fastapi import FastAPI
+from app.routes import activity, user
+from app.db.db_setup import engine_postgres, Base
 
-app = FastAPI()
+Base.metadata.create_all(bind=engine_postgres)
 
-activities = [
-    
-]
+description = """
+## Date Ideas
 
-@app.get("/")
-async def root():
-    return {"message": "Hello from FastAPI!"}
+This is the API for couples to share date ideas and plan them.
 
-@app.get("/activities", response_model=List[DateIdeas])
-async def get_posts():
-    return activities
+"""
 
-@app.post("/activities")
-async def create(data: DateIdeas):
-    activities.append(data.model_dump())
-    return {"data": data}	
+app = FastAPI(
+    title="Date Ideas Application",
+    description=description,
+    summary="Application for my Cricri and I <3",
+    version="0.0.1",
+    contact={
+        "name": "Riboulet Ronan",
+        "email": "ronanriboulet@gmail.com",
+    },
+    )
 
-@app.get("/activities/{id}")
-# the id is a path parameter and must match the first parameter of the endpoint function
-async def get_by_id(
-    id: int = Path(..., description="The ID of the activity you wanna retrieve", gt=0, lt=10),
-    q: str = Query(None, max_length=5),
-    ):
-    return {f"activities": activities[id], "q": q}
+app.include_router(activity.router)
+app.include_router(user.router)
+
+
+
