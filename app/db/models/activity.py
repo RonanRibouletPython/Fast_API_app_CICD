@@ -14,6 +14,6 @@ class Activity(TimestampMixin, Base):
     location = Column(String, nullable=True)
     link_info = Column(URLType, nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    description = Column(Text, nullable=True)  # New column added!
+    description = Column(Text, nullable=True)
 
     created_by = relationship("User", back_populates="activities")

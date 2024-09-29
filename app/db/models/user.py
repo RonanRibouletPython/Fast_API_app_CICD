@@ -10,7 +10,7 @@ class User(TimestampMixin, Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(50), nullable=False)
     age = Column(Integer, nullable=False)
-    partner_id = Column(Integer, ForeignKey('users.id')) 
+    partner_id = Column(Integer, ForeignKey('users.id'), nullable=True) 
 
     partner = relationship("User", remote_side=[id], post_update=True) 
     activities = relationship("Activity", back_populates="created_by")
