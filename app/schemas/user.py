@@ -7,6 +7,10 @@ class UserBase(BaseModel):
     date_of_birth: date
     partner_id: Optional[int] = None
     
+class UserModify(UserBase):
+    name: Optional[str] = None
+    date_of_birth: Optional[date] = None
+    partner_id: Optional[int] = None
 
 class UserCreate(UserBase):
     ...

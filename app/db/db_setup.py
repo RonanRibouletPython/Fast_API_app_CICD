@@ -22,8 +22,3 @@ SessionLocal = sessionmaker(
 
 Base = declarative_base()
 
-from app.db.models.user import User
-from app.db.models.activity import Activity
-
-target_metadata = Base.metadata
-

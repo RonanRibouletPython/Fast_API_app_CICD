@@ -5,7 +5,7 @@ from app.utils.utility import get_db
 from app.schemas.user import UserCreate, UserBase
 from app.utils.user import create_user, get_user, update_user, get_user_by_name_and_dob, delete_user_by_name_and_dob
 from app.db.models.user import User as UserModel
-from app.schemas.user import User as UserSchema, UserDelete
+from app.schemas.user import User as UserSchema, UserDelete, UserModify
 from app.utils.logger import logger
 
 users = [
@@ -100,7 +100,7 @@ async def delete_user(user: UserDelete, db: Session = Depends(get_db)):
         )
     
 @router.put("/users/modify/{user_id}", response_model=UserSchema)
-async def update_user_by_id(user_id: int, user: UserBase, db: Session = Depends(get_db)):
+async def update_user_by_id(user_id: int, user: UserModify, db: Session = Depends(get_db)):
     """Update a user by their ID."""
     """Update a user by their name and date of birth."""
     logger.info(f"Attempting to update user: {user.name}, DOB: {user.date_of_birth}")

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.db.models.user import User as UserModel  # Import the SQLAlchemy model 
-from app.schemas.user import User, UserBase, UserCreate, UserDelete
+from app.schemas.user import User, UserBase, UserCreate, UserDelete, UserModify
 from datetime import datetime, date
 import sqlalchemy as sa
 from app.utils.logger import logger
@@ -30,17 +30,19 @@ def create_user(db: Session, user: UserCreate):
     db.refresh(db_user)
     return db_user
 
-def update_user(db: Session, user_id: int, user: UserBase) -> Optional[User]:
+def update_user(db: Session, user_id: int, user: UserModify) -> Optional[User]:
     """Update a user by their name and date of birth."""
     db_user = db.query(UserModel).filter(UserModel.id == user_id).first()
 
     if db_user is None:
         return None  # User not found, return None
 
-    # Update user fields
-    db_user.name = user.name
-    db_user.date_of_birth = user.date_of_birth
-    db_user.partner_id = user.partner_id
+    if user.name is not None:
+        db_user.name = user.name
+    if user.date_of_birth is not None:
+        db_user.date_of_birth = user.date_of_birth
+    if user.partner_id is not None:
+        db_user.partner_id = user.partner_id
     db_user.updated_at = datetime.now()
 
     db.commit()  # Commit the changes
