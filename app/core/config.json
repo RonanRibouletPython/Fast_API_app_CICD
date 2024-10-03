@@ -1,5 +1,13 @@
 {
-    "creds_postgres": {
+    "creds_postgres_docker": {
+        "username": "test_user",
+        "password": "2310",
+        "port": "2310",
+        "host": "postgres",
+        "db": "test_db"
+    },
+
+    "creds_postgres_local": {
         "username": "test_user",
         "password": "2310",
         "port": "2310",

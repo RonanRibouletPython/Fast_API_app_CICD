@@ -56,3 +56,16 @@ def delete_user_by_name_and_dob(db: Session, name: str, date_of_birth: date):
     user_to_delete = get_user_by_name_and_dob(db, name=name, date_of_birth=date_of_birth)
     if user_to_delete:
         db.delete(user_to_delete)
+        
+def delete_partner_id(db: Session, user_id: int):
+    user = db.query(UserModel).filter(UserModel.id == user_id).first()
+    if user:
+        user.partner_id = None
+        user.updated_at = datetime.now()
+        db.commit()
+
+def get_user_partner_id(db: Session, user_id: int):
+    user = db.query(UserModel).filter(UserModel.id == user_id).first()
+    if user:
+        return user.id
+    return None

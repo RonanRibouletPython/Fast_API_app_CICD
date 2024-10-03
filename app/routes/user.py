@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.utils.utility import get_db
 from app.schemas.user import UserCreate, UserBase
-from app.utils.user import create_user, get_user, update_user, get_user_by_name_and_dob, delete_user_by_name_and_dob
+from app.utils.user import create_user, get_user, update_user, get_user_by_name_and_dob, delete_user_by_name_and_dob, delete_partner_id, get_user_by_partner_id, get_user_partner_id
 from app.db.models.user import User as UserModel
 from app.schemas.user import User as UserSchema, UserDelete, UserModify
 from app.utils.logger import logger
@@ -54,18 +54,10 @@ async def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
     return user
 
 @router.delete("/users/delete")
-async def delete_user(user: UserDelete, db: Session = Depends(get_db)):
-    """
-    Delete a user with their name and date of birth.
+async def delete_user(user: UserBase, db: Session = Depends(get_db)):
 
-    - If the user exists, they are deleted from the system.
-    - If the user does not exist, return a 204 status to indicate that the user was not found.
-    """
-    
-    # Log the incoming request
     logger.info(f"Attempting to delete user: {user.name}, DOB: {user.date_of_birth}")
     
-    # Validate input data
     if not user.name or not user.date_of_birth:
         logger.warning(f"Invalid input: Missing name or date_of_birth.")
         raise HTTPException(
@@ -85,6 +77,11 @@ async def delete_user(user: UserDelete, db: Session = Depends(get_db)):
                 detail="User not found.",
             )
 
+        # Delete the partner ID of the partner user if it exists
+        partner_user_id = get_user_partner_id(db=db, user_id=existing_user.partner_id)
+        if partner_user_id:
+            delete_partner_id(db=db, user_id=partner_user_id)
+
         # Proceed with deletion
         delete_user_by_name_and_dob(db=db, name=user.name, date_of_birth=user.date_of_birth)
         db.commit()  # Commit the transaction
@@ -98,6 +95,7 @@ async def delete_user(user: UserDelete, db: Session = Depends(get_db)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An internal server error occurred. Please try again later.",
         )
+
     
 @router.put("/users/modify/{user_id}", response_model=UserSchema)
 async def update_user_by_id(user_id: int, user: UserModify, db: Session = Depends(get_db)):
