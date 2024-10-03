@@ -3,10 +3,10 @@
         "username": "test_user",
         "password": "2310",
         "port": "2310",
-        "host": "postgres",
+        "host": "host.docker.internal",
         "db": "test_db"
     },
-
+    
     "creds_postgres_local": {
         "username": "test_user",
         "password": "2310",

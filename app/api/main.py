@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from app.routes import activity, user
 from app.db.db_setup import engine_postgres, Base
 
-Base.metadata.create_all(bind=engine_postgres)
+# commented because the database is created with alembic
+# Base.metadata.create_all(bind=engine_postgres)
 
 description = """
 ## Date Ideas
