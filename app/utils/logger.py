@@ -6,7 +6,7 @@ import os
 # Load environment variables from a .env file
 load_dotenv()
 
-log_file_path = os.getenv('LOG_FILE_PATH')
+log_file_path = os.getenv('LOG_FILE_PATH', 'app/logs/app_logs.log')
 
 # ANSI escape codes for colors
 COLORS = {
