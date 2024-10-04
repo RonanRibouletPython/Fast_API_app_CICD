@@ -18,12 +18,14 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      # Step to set up Docker Buildx for multi-platform builds
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      # Step to set up Python 3.11
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
 
-      # Step to install Docker Compose
-      - name: Install Docker Compose
+      # Step to install Docker and Docker Compose
+      - name: Install Docker and Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
@@ -40,7 +42,8 @@ jobs:
 
       # Step to install the application dependencies
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root
+        run: |
+          poetry install --no-interaction --no-root
 
       # Step to run unit tests and save coverage output
       - name: Run unit tests and save coverage output
