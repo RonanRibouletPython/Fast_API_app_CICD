@@ -1,4 +1,4 @@
-name: Unit Tests, Test Coverage and Dockerization of the Fast API application in CI/CD environment
+name: Unit Tests, Test Coverage, and Dockerization of the FastAPI application in CI/CD environment
 
 on:
   push:
@@ -13,71 +13,76 @@ jobs:
   run_unit_tests:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: 2310
-          POSTGRES_DB: test_db
-        ports:
-          - 2310:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
+      # Step to check out the repository code
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
+      # Step to set up Docker Buildx for multi-platform builds
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
+      # Step to build and run the services defined in docker-compose.yml
+      - name: Build and run Docker Compose
+        run: |
+          docker-compose up -d --build   # Build and start containers in detached mode
+          sleep 10                        # Wait for services to start (adjust as necessary)
+
+      # Step to install Poetry for dependency management
       - name: Install Poetry
         uses: snok/install-poetry@v1
 
+      # Step to install the application dependencies
       - name: Install dependencies
         run: poetry install --no-interaction --no-root
 
+      # Step to run unit tests and save coverage output
       - name: Run unit tests and save coverage output
         env:
-          DATABASE_URL: postgresql+psycopg2://test_user:2310@localhost:2310/test_db
+          # Updated DATABASE_URL to connect to the PostgreSQL service in Docker Compose
+          DATABASE_URL: postgresql+psycopg2://root_user:2310@localhost/dev_db
         run: poetry run pytest --cov=app tests/ | tee pytest-coverage.txt
 
+      # Step to upload the coverage report as an artifact
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
           name: pytest-coverage.txt
           path: pytest-coverage.txt
-  
+
+      # Optional cleanup step to stop and remove the Docker containers
+      - name: Cleanup
+        run: docker-compose down
+
   build_and_publish:
     needs: run_unit_tests 
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      # Step to check out the code again for the build job
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      # Step to set up Docker Buildx for the build process
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Login to DockerHub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      # Step to log in to DockerHub using secrets for authentication
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v4
-      with:
-        context: .
-        file: ./Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/my-fastapi-app:latest
+      # Step to build and push the Docker image
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/my-fastapi-app:latest
 
-    - name: Image digest
-      run: echo ${{ steps.build_and_publish.outputs.digest }}
+      # Step to print the image digest after the build
+      - name: Image digest
+        run: echo ${{ steps.build_and_publish.outputs.digest }}
