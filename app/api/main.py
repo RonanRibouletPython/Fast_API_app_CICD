@@ -3,7 +3,7 @@ from app.routes import activity, user
 from app.db.db_setup import engine_postgres, Base
 
 # commented because the database is created with alembic
-# Base.metadata.create_all(bind=engine_postgres)
+Base.metadata.create_all(bind=engine_postgres)
 
 description = """
 ## Date Ideas

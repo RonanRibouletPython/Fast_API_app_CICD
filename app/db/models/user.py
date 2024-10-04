@@ -7,12 +7,12 @@ from app.db.models.activity import Activity
 
 class User(TimestampMixin, Base):
     __tablename__ = 'users'
-    __table_args__ = {'schema': 'test_schema'}
+    __table_args__ = {'schema': 'app_schema'}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(50), nullable=False)
     date_of_birth = Column(Date, nullable=False)
-    partner_id = Column(Integer, ForeignKey('test_schema.users.id'), nullable=True) 
+    partner_id = Column(Integer, ForeignKey('app_schema.users.id'), nullable=True) 
 
     partner = relationship("User", remote_side=[id], post_update=True) 
     activities = relationship("Activity", back_populates="created_by")

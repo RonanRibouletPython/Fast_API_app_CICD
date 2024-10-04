@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 
 class Activity(TimestampMixin, Base):
     __tablename__ = "activities"
-    __table_args__ = {"schema": "test_schema"}
+    __table_args__ = {"schema": "app_schema"}
 
     id = Column(Integer, primary_key=True)
     activity_name = Column(String, nullable=False)
@@ -14,8 +14,7 @@ class Activity(TimestampMixin, Base):
     budget = Column(String, nullable=False)
     location = Column(String, nullable=True)
     link_info = Column(URLType, nullable=True)
-    user_id = Column(Integer, ForeignKey("test_schema.users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("app_schema.users.id"), nullable=False)
     description = Column(Text, nullable=True)
-    test = Column(String, nullable=True)
 
     created_by = relationship("User", back_populates="activities")

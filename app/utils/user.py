@@ -69,3 +69,9 @@ def get_user_partner_id(db: Session, user_id: int):
     if user:
         return user.id
     return None
+
+def delete_user_with_id(db: Session, user_id: int):
+    user = db.query(UserModel).filter(UserModel.id == user_id).first()
+    if user:
+        db.delete(user)
+        db.commit()

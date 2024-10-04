@@ -32,7 +32,7 @@ if env == "docker":
 
 conn_str = f"postgresql+psycopg2://{creds_postgres['username']}:{creds_postgres['password']}@{creds_postgres['host']}:{creds_postgres['port']}/{creds_postgres['db']}"
 engine_postgres = create_engine(
-    conn_str, future=True, connect_args={"options": "-csearch_path=test_schema"}
+    conn_str, future=True, connect_args={"options": "-csearch_path=app_schema"}
     )
 
 SessionLocal = sessionmaker(

@@ -1,5 +1,6 @@
 services:
   api:
+    container_name: fast_api
     build: .
     ports:
       - 8000:8000
@@ -10,15 +11,24 @@ services:
     environment:
       - ENV=docker
     command: poetry run uvicorn --reload app.api.main:app --host 0.0.0.0 --port 8000
-    # depends_on:
-    #   - postgres
+    depends_on:
+      - postgres
 
-#   postgres:
-#     image: postgres
-#     ports:
-#       - "5432:5432"
-#     volumes:
-#       - postgres-db:/var/lib/postgresql/data
+  postgres:
+    image: postgres:17
+    container_name: postgres_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: dev_db
+      POSTGRES_USER: root_user
+      POSTGRES_PASSWORD: 2310
+    
+    restart: always
+      
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
 
-# volumes:
-#   postgres-db:
+volumes:
+  postgres-db:
