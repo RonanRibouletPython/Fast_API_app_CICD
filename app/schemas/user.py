@@ -5,19 +5,17 @@ from datetime import date, datetime
 class UserBase(BaseModel):
     name: str
     date_of_birth: date
-    partner_id: Optional[int] = None
+    password: str
     
 class UserModify(UserBase):
     name: Optional[str] = None
     date_of_birth: Optional[date] = None
+    password: Optional[str] = None
     partner_id: Optional[int] = None
+    
 
 class UserCreate(UserBase):
     ...
-    
-class UserDelete(BaseModel):
-    name: str
-    date_of_birth: date
     
 class User(UserBase):
     id: int
