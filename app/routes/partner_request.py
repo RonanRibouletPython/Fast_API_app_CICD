@@ -109,4 +109,27 @@ async def respond_to_partner_request(
 
         db.commit()
         return partner_request
+    
+@router.post("/partner/cancel")
+async def cancel_partner_request(
+    db: Session = Depends(get_db),
+    current_user: UserSchema = Depends(get_current_user)
+):
+    """Cancel the partner relationship."""
+    if not current_user.partner_id:
+        raise HTTPException(status_code=400, detail="You are not in a relationship")
+
+    partner = db.query(UserModel).filter(UserModel.id == current_user.partner_id).first()
+
+    if not partner:
+        raise HTTPException(status_code=404, detail="Partner not found")
+
+    # Break the mutual relationship
+    current_user.partner_id = None
+    partner.partner_id = None
+    partner.updated_at = datetime.now()
+    current_user.updated_at = datetime.now()
+    db.commit()
+    
+    return {"message": "Partner relationship canceled"}
 
