@@ -123,6 +123,16 @@ async def cancel_partner_request(
 
     if not partner:
         raise HTTPException(status_code=404, detail="Partner not found")
+    
+    # Cancel any pending partner requests involving the current user
+    pending_requests = db.query(PartnerRequestModel).filter(
+        (PartnerRequestModel.requester_id == current_user.id) |
+        (PartnerRequestModel.requested_id == current_user.id)
+    ).filter(PartnerRequestModel.status == 'pending').all()
+
+    for request in pending_requests:
+        request.status = 'cancelled'
+        request.updated_at = datetime.now()
 
     # Break the mutual relationship
     current_user.partner_id = None
