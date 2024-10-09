@@ -1,6 +1,9 @@
 from fastapi import FastAPI
-from app.routes import activity, user
+from app.routes import activity, user, partner_request
 from app.db.db_setup import engine_postgres, Base
+from app.db.models.user import User
+from app.db.models.partner_request import PartnerRequest
+from app.db.models.activity import Activity
 
 # commented because the database is created with alembic
 Base.metadata.create_all(bind=engine_postgres)
@@ -25,6 +28,7 @@ app = FastAPI(
 
 app.include_router(activity.router)
 app.include_router(user.router)
+app.include_router(partner_request.router)
 
 
 

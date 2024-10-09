@@ -1,9 +1,7 @@
 from app.db.db_setup import Base 
 from app.db.models.mixins import TimestampMixin 
 from sqlalchemy import Column, Integer, String, ForeignKey, Date
-from sqlalchemy_utils import URLType
 from sqlalchemy.orm import relationship
-from app.db.models.activity import Activity
 
 class User(TimestampMixin, Base):
     __tablename__ = 'users'
