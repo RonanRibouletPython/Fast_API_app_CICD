@@ -11,7 +11,7 @@ from datetime import datetime
 
 router = APIRouter()
 
-@router.post("/partner/request/{requested_user_id}", response_model=PartnerRequest)
+@router.post("/partner/request/{requested_user_id}/", response_model=PartnerRequest)
 async def send_partner_request(
     requested_user_id: int,
     db: Session = Depends(get_db),
@@ -54,7 +54,7 @@ async def send_partner_request(
     
     return new_partner_request
 
-@router.post("/partner/response/{request_id}", response_model=PartnerRequest)
+@router.post("/partner/response/{request_id}/", response_model=PartnerRequest)
 async def respond_to_partner_request(
     request_id: int,
     response: str,  # 'accepted' or 'declined'
@@ -110,8 +110,8 @@ async def respond_to_partner_request(
         db.commit()
         return partner_request
     
-@router.post("/partner/cancel")
-async def cancel_partner_request(
+@router.post("/partner/cancel/")
+async def cancel_partner_relationship(
     db: Session = Depends(get_db),
     current_user: UserSchema = Depends(get_current_user)
 ):

@@ -17,4 +17,10 @@ class Activity(TimestampMixin, Base):
     user_id = Column(Integer, ForeignKey("app_schema.users.id"), nullable=False)
     description = Column(Text, nullable=True)
 
-    created_by = relationship("User", back_populates="activities")
+    # Foreign keys for user and partner
+    user_id = Column(Integer, ForeignKey("app_schema.users.id"), nullable=False)
+    partner_id = Column(Integer, ForeignKey("app_schema.users.id"), nullable=False)
+
+    # Relationships
+    created_by = relationship("User", foreign_keys=[user_id], back_populates="activities_created")
+    partner = relationship("User", foreign_keys=[partner_id], back_populates="activities_shared")

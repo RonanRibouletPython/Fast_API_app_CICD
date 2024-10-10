@@ -30,7 +30,7 @@ except ValueError:
 
 router = APIRouter()
 
-@router.post("/user/create", response_model=UserSchema)
+@router.post("/user/create/", response_model=UserSchema)
 async def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
     """
     Create a new user in the system.
@@ -48,7 +48,7 @@ async def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
     logger.info(f"User {created_user.name} created successfully with ID {created_user.id}.")
     return created_user	
 
-@router.get("/user/{user_id}", response_model=UserSchema)
+@router.get("/user/{user_id}/", response_model=UserSchema)
 async def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
     """
     Get user information by their ID.
@@ -99,7 +99,7 @@ async def update_user_by_id(
     logger.info(f"User with ID {user_id} updated successfully.")
     return updated_user
 
-@router.delete("/user/{user_id}")
+@router.delete("/user/{user_id}/")
 async def delete_user_by_id(
     user_id: int, 
     db: Session = Depends(get_db),
@@ -130,7 +130,7 @@ async def delete_user_by_id(
             detail="An internal server error occurred. Please try again later.",
         )
     
-@router.post("/login")
+@router.post("/login/")
 async def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     """
     Login a user and return a JWT token if the credentials are valid.

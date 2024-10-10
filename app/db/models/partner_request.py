@@ -11,7 +11,6 @@ class PartnerRequest(TimestampMixin, Base):
     requester_id = Column(Integer, ForeignKey('app_schema.users.id'), nullable=False)
     requested_id = Column(Integer, ForeignKey('app_schema.users.id'), nullable=False)
     status = Column(String(20), nullable=False, default='pending')  # 'pending', 'accepted', 'rejected'
-    test = Column(String(255), nullable=True)
     
     requester = relationship("User", foreign_keys=[requester_id])
     requested = relationship("User", foreign_keys=[requested_id])

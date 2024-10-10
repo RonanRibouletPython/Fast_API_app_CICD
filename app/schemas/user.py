@@ -11,7 +11,6 @@ class UserModify(UserBase):
     name: Optional[str] = None
     date_of_birth: Optional[date] = None
     password: Optional[str] = None
-    partner_id: Optional[int] = None
     
 
 class UserCreate(UserBase):

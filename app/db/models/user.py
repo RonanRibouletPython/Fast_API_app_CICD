@@ -2,6 +2,7 @@ from app.db.db_setup import Base
 from app.db.models.mixins import TimestampMixin 
 from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
+from app.db.models.activity import Activity
 
 class User(TimestampMixin, Base):
     __tablename__ = 'users'
@@ -13,5 +14,8 @@ class User(TimestampMixin, Base):
     date_of_birth = Column(Date, nullable=False)
     partner_id = Column(Integer, ForeignKey('app_schema.users.id'), nullable=True)
 
-    partner = relationship("User", remote_side=[id], post_update=True)
-    activities = relationship("Activity", back_populates="created_by")
+    # Activities created by this user
+    activities_created = relationship("Activity", foreign_keys=[Activity.user_id], back_populates="created_by")
+
+    # Activities shared with the user by their partner
+    activities_shared = relationship("Activity", foreign_keys=[Activity.partner_id], back_populates="partner")
