@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy.orm import Session
 from app.utils.utility import get_db
 from app.schemas.user import UserCreate
@@ -129,32 +130,40 @@ async def delete_user_by_id(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An internal server error occurred. Please try again later.",
         )
-    
+
+from fastapi.responses import JSONResponse
+
 @router.post("/login/")
-async def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
-    """
-    Login a user and return a JWT token if the credentials are valid.
-    """
+async def login_for_access_token(
+    db: Session = Depends(get_db), 
+    form_data: OAuth2PasswordRequestForm = Depends()
+):
     logger.info(f"Attempting to log in user: {form_data.username}")
     
-    # Get the user from the database using the username from the form data
+    # Fetch the user from the database
     user = db.query(UserModel).filter(UserModel.name == form_data.username).first()
 
-    # Verify user existence and password correctness
+    # Validate user credentials
     if not user or not verify_password(form_data.password, user.password):
-        logger.warning(f"Login failed for user: {form_data.username}. Incorrect credentials.")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
+        logger.warning(f"Login failed for user: {form_data.username} - Invalid credentials.")
+        return JSONResponse(
+            content={"detail": "Incorrect username or password"},
+            status_code=401
         )
     
-    # Generate the JWT token
+    # Generate JWT access token
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.name}, expires_delta=access_token_expires
     )
-    logger.info(f"User {form_data.username} logged in successfully. Access token generated.")
+
+    logger.info(f"Login successful for user: {form_data.username}.")
     
-    # Return the token and token type
-    return {"access_token": access_token, "token_type": "bearer"}
+    # Return JSON response with username and success flag
+    return JSONResponse(
+        content={"success": True, "username": user.name, "token": access_token}, 
+        status_code=200
+    )
+
+
+
