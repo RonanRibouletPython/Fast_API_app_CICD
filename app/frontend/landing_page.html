@@ -10,6 +10,12 @@
     <div class="container text-center mt-5">
         <h1>Welcome to the Landing Page</h1>
         <h3 id="welcome-message"></h3>
+
+        <!-- Logout button to go back to the login page -->
+        <button id="logout-button" class="btn btn-danger mt-3" onclick="logout()">Logout</button>
+    
+
+
     </div>
 
     <script>
@@ -23,6 +29,12 @@
         const username = getUrlParameter('username');
         if (username) {
             document.getElementById('welcome-message').innerText = `Hello, ${username}!`;
+        }
+
+        // Function to handle logout and redirect to login page
+        function logout() {
+            // Redirect to the login page
+            window.location.href = 'http://localhost:8000/static/login.html'; // Update this path if necessary
         }
     </script>
 </body>
